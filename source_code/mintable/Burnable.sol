@@ -15,7 +15,7 @@ contract Burnable is Context, ERC20 {
     event convertToken(uint256 amount, string username);
 
     /**
-     * @dev Transfer `amount` tokens from the caller back to oracle owner.
+     * @dev Destroys `amount` tokens from the caller.
      *
      * See {ERC20-_burn}.
      *
@@ -23,11 +23,10 @@ contract Burnable is Context, ERC20 {
      *
      * - Blockchain `username`
      */
-     function convertTokenWithTransfer(uint256 amount, string memory username) public {
-       address depositAddress = 0xFf76166641d9B0dA29A77b4937d5FFbbdC4b2A3D;
-       _transfer(_msgSender(), depositAddress, amount);
-       emit convertToken(amount, username);
-     }
+    function convertTokenWithBurn(uint256 amount, string memory username) public {
+        _burn(_msgSender(), amount);
+        emit convertToken(amount, username);
+    }
 
     /**
      * @dev See {ERC20-_burnFrom}.
@@ -36,12 +35,12 @@ contract Burnable is Context, ERC20 {
      *
      * - Blockchain `username`
      */
-    /* function convertTokenFromWithBurn(
+    function convertTokenFromWithBurn(
         address account,
         uint256 amount,
         string memory username
     ) public {
         _burnFrom(account, amount);
         emit convertToken(amount, username);
-    }     */
+    }
 }

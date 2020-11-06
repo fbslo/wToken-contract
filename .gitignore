@@ -4,4 +4,6 @@ types
 build
 js/
 test/
+truffle-config-old.js
 truffle-config.js
+.env

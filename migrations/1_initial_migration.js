@@ -1,18 +1,31 @@
-// const Migrations = artifacts.require("Migrations");
-//
-// module.exports = function(deployer) {
-//   if (deployer.network === 'skipMigrations') {
-//     return;
-//   } else {
-//     deployer.deploy(Migrations);
-//   }
-// };
-
 const wToken = artifacts.require("wToken");
+const fs = require("fs")
+require('dotenv').config();
 
 module.exports = function(deployer) {
   deployer.deploy(wToken)
-    .then(() => {
-      console.log(`Your token's smart contract address is: ${wToken.address}`)
+    .then(async () => {
+      try {
+        console.log(`Your token's smart contract address is: ${wToken.address}`)
+        let empty = await writeFile("./state.json", "")
+        writeFile("./state.json", `"contract": "${wToken.address}"}`)
+        if (process.env.TYPE == 'fixed'){ //mint tokens and remove minter
+          let instance = await wToken.deployed()
+          let tx = await instance.mint(process.env.ADDRESS, process.env.AMOUNT)
+          let minter = tx.receipt.from
+          await instance.removeMinter(minter)
+        }
+      } catch (e) {
+        console.log(e)
+      }
     })
 };
+
+function writeFile(location, data){
+  return new Promise((resolve, reject) =>  {
+    fs.writeFile(location, data, (err) => {
+      if (err) reject(err)
+      else resolve()
+    })
+  })
+}
