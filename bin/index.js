@@ -110,7 +110,7 @@ async function fixed(token){
   //code is now complete, let's prepare for deployment
   let privateKey = await getPrivateKey()
   let ethereumEndpoint = await getEndpoint()
-  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)\nTYPE=fixed}`
+  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)}\nTYPE=fixed}`
   await writeFile("./.env", data)
   deploy(token)
 }
