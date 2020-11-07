@@ -14,6 +14,8 @@ const rl = readline.createInterface({
 
 const source = `pragma solidity ^0.5.1;\nimport "@openzeppelin/contracts/token/ERC20/ERC20Detailed.sol";\nimport "./WrappedToken.sol";\n`
 
+let os = process.platform
+
 collectInformation()
 
 async function collectInformation(){
@@ -114,7 +116,9 @@ async function fixed(token){
 }
 
 function deploy(token){
-  exec("copy truffle-config.demo.js truffle-config.js && truffle deploy --network mainnet", function(err, stdout, stderr) {
+  let copy_command = 'copy'
+  if (os == "linux") copy_command = 'cp'
+  exec(copy_command+" truffle-config.demo.js truffle-config.js && truffle deploy --network mainnet", function(err, stdout, stderr) {
     if (err) console.log(err)
     console.log(stdout);
     generateABI()
