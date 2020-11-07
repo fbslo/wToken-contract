@@ -123,8 +123,13 @@ function deploy(token){
     if (err) console.log(err)
     console.log(stdout);
     generateABI()
+    deleteEnv()
     console.log("Contract deployed, you can now exit.")
   });
+}
+
+function deleteEnv(){
+  emptyFile("./.env")
 }
 
 async function generateABI(){
