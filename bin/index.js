@@ -62,7 +62,7 @@ function getSymbol(){
 
 function getPrecision(){
   return new Promise((resolve, reject) => {
-    rl.question('Please enter token precison (number of decimals): ', (answer) => {
+    rl.question('Please enter token precison (number of decimals, 0-18): ', (answer) => {
       resolve(answer)
     })
   });
