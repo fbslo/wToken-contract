@@ -110,18 +110,20 @@ async function fixed(token){
   //code is now complete, let's prepare for deployment
   let privateKey = await getPrivateKey()
   let ethereumEndpoint = await getEndpoint()
-  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)}`
+  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)\nTYPE=fixed}`
   await writeFile("./.env", data)
   deploy(token)
 }
 
 function deploy(token){
   let copy_command = 'copy'
-  if (os == "linux") copy_command = 'cp'
+  if (os == "linux" || "darwin") copy_command = 'cp'
+  console.log("Deploying contract, please wait...")
   exec(copy_command+" truffle-config.demo.js truffle-config.js && truffle deploy --network mainnet", function(err, stdout, stderr) {
     if (err) console.log(err)
     console.log(stdout);
     generateABI()
+    console.log("Contract deployed, you can now exit.")
   });
 }
 
@@ -130,8 +132,6 @@ async function generateABI(){
   let data = `const ABI = ${JSON.stringify(tokenABI)}\n\nexports.ABI = ABI;`
   let createABI = writeFile("./tokenABI.js", data)
 }
-
-generateABI()
 
 function getDepositAddress(){
   return new Promise((resolve, reject) => {

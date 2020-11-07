@@ -8,7 +8,7 @@ module.exports = function(deployer) {
       try {
         console.log(`Your token's smart contract address is: ${wToken.address}`)
         let empty = await writeFile("./state.json", "")
-        writeFile("./state.json", `"contract": "${wToken.address}"}`)
+        await writeFile("./state.json", `{"contract": "${wToken.address}"}`)
         if (process.env.TYPE == 'fixed'){ //mint tokens and remove minter
           let instance = await wToken.deployed()
           let tx = await instance.mint(process.env.ADDRESS, process.env.AMOUNT)
