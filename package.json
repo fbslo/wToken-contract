@@ -1,7 +1,7 @@
 {
-  "name": "bswap",
+  "name": "wToken",
   "version": "1.0.0",
-  "description": "",
+  "description": "Wrapped Token Contract",
   "main": "index.js",
   "scripts": {
     "test": "truffle test",
