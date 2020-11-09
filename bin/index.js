@@ -101,12 +101,13 @@ async function fixed(token){
   let sourceCode = await readFile("./source_code/fixed/Burnable.sol")
   let empty = await emptyFile("./contracts/Burnable.sol")
   let address = await getDepositAddress()
+  let amount = await getMaxTokens()
   let modifySource = sourceCode.split("=")[0] + `= ${toChecksumAddress(address)}` + sourceCode.split("=")[1]
   let write = await writeFile("./contracts/Burnable.sol", modifySource)
   let mainEmpty = await emptyFile("./contracts/wToken.sol")
-  let mainSource = source + `contract wToken is WrappedToken, ERC20Detailed("${token.name}", "${token.symbol}", ${token.precision}) {}`
+  let capped = `\nimport "@openzeppelin/contracts/token/ERC20/ERC20Capped.sol";\n`
+  let mainSource = source + capped + `contract wToken is WrappedToken, ERC20Capped(${amount * Math.pow(10, token.precison)}), ERC20Detailed("${token.name}", "${token.symbol}", ${token.precision}) {}`
   let writeMain = await writeFile("./contracts/wToken.sol", mainSource)
-  let amount = await getMaxTokens()
   //code is now complete, let's prepare for deployment
   let privateKey = await getPrivateKey()
   let ethereumEndpoint = await getEndpoint()
