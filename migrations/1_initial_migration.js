@@ -11,9 +11,11 @@ module.exports = function(deployer) {
         await writeFile("./state.json", `{"contract": "${wToken.address}"}`)
         if (process.env.TYPE == 'fixed'){ //mint tokens and remove minter
           let instance = await wToken.deployed()
+          console.log(`Contract deployed, minting ${process.env.AMOUNT} tokens...`)
           let tx = await instance.mint(process.env.ADDRESS, process.env.AMOUNT)
-          let minter = tx.receipt.from
-          await instance.removeMinter(minter)
+          console.log(`${process.env.AMOUNT} tokens minted to ${process.env.ADDRESS}!`)
+          //let minter = tx.receipt.from
+          //await instance.removeMinter(minter)
         }
       } catch (e) {
         console.log(e)
