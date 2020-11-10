@@ -13,7 +13,7 @@ module.exports = function(deployer) {
           let instance = await wToken.deployed()
           console.log(`Contract deployed, minting ${process.env.AMOUNT} tokens...`)
           let tx = await instance.mint(process.env.ADDRESS, process.env.AMOUNT)
-          console.log(`${process.env.AMOUNT} tokens minted to ${process.env.ADDRESS}!`)
+          console.log(`${process.env.AMOUNT / Math.pow(10, process.env.PRECISION)} tokens minted to ${process.env.ADDRESS}!`)
           //let minter = tx.receipt.from
           //await instance.removeMinter(minter)
         }

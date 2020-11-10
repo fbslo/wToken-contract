@@ -94,7 +94,7 @@ async function mintable(token){
   let privateKey = await getPrivateKey()
   let ethereumEndpoint = await getEndpoint()
   let id = await getNetworkId(ethereumEndpoint)
-  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nTYPE=mintable\nNETWORK_ID=${id}`
+  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nTYPE=mintable\nNETWORK_ID=${id}\nPRECISION=${token.precision}`
   await writeFile("./.env", data)
   deploy(token)
 }
@@ -114,7 +114,7 @@ async function fixed(token){
   let privateKey = await getPrivateKey()
   let ethereumEndpoint = await getEndpoint()
   let id = await getNetworkId(ethereumEndpoint)
-  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)}\nTYPE=fixed\nNETWORK_ID=${id}`
+  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)}\nTYPE=fixed\nNETWORK_ID=${id}\nPRECISION=${token.precision}`
   await writeFile("./.env", data)
   deploy(token)
 }
