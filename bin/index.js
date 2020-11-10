@@ -5,6 +5,7 @@ const fs = require("fs")
 const readline = require("readline");
 var exec = require('child_process').exec;
 const { toChecksumAddress } = require('ethereum-checksum-address')
+const Web3 = require('web3');
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -92,7 +93,8 @@ async function mintable(token){
   //code is now complete, let's prepare for deployment
   let privateKey = await getPrivateKey()
   let ethereumEndpoint = await getEndpoint()
-  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nTYPE=mintable`
+  let id = await getNetworkId(ethereumEndpoint)
+  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nTYPE=mintable\nNETWORK_ID=${id}`
   await writeFile("./.env", data)
   deploy(token)
 }
@@ -111,7 +113,8 @@ async function fixed(token){
   //code is now complete, let's prepare for deployment
   let privateKey = await getPrivateKey()
   let ethereumEndpoint = await getEndpoint()
-  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)}\nTYPE=fixed`
+  let id = await getNetworkId(ethereumEndpoint)
+  let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)}\nTYPE=fixed\nNETWORK_ID=${id}`
   await writeFile("./.env", data)
   deploy(token)
 }
@@ -168,6 +171,14 @@ function getEndpoint(){
     rl.question('Please enter Ethereum endpoint: ', (answer) => {
       resolve(answer)
     })
+  })
+}
+
+async function getNetworkId(endpoint){ //truffle is now working even with "*", manually rewrite!
+  return new Promise(async (resolve, reject) => {
+    var web3 = new Web3(endpoint);
+    let id = await web3.eth.net.getId()
+    resolve(id)
   })
 }
 

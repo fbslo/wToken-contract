@@ -11,7 +11,7 @@ module.exports = {
   networks: {
     mainnet: {
      provider: () => new PrivateKeyProvider(privateKey, ethereumEndpoint),
-     network_id: "*"
+     network_id: process.env.NETWORK_ID
    }
   },
   mocha: {
