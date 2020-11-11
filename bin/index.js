@@ -96,7 +96,7 @@ async function mintable(token){
   let id = await getNetworkId(ethereumEndpoint)
   let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nTYPE=mintable\nNETWORK_ID=${id}\nPRECISION=${token.precision}`
   await writeFile("./.env", data)
-  deploy(token)
+  deploy(token, id)
 }
 
 async function fixed(token){
@@ -116,19 +116,35 @@ async function fixed(token){
   let id = await getNetworkId(ethereumEndpoint)
   let data = `PRIVATE_KEY=${privateKey}\nETHEREUM_ENDPOINT=${ethereumEndpoint}\nADDRESS=${address}\nAMOUNT=${amount * Math.pow(10, token.precision)}\nTYPE=fixed\nNETWORK_ID=${id}\nPRECISION=${token.precision}`
   await writeFile("./.env", data)
-  deploy(token)
+  deploy(token, id, ethereumEndpoint, privateKey)
 }
 
-function deploy(token){
+function deploy(token, id, ethereumEndpoint, privateKey){
   let copy_command = 'copy'
   if (os == "linux" || "darwin") copy_command = 'cp'
   console.log("Deploying contract, please wait...")
-  exec(copy_command+" truffle-config.demo.js truffle-config.js && truffle deploy --network mainnet", function(err, stdout, stderr) {
+  if (id != 1){ //deploying on mainnet with truffle is throwing errors, but ropsten works????
+    exec(copy_command+" truffle-config.demo.js truffle-config.js && truffle deploy --network mainnet", function(err, stdout, stderr) {
+      if (err) console.log(err)
+      console.log(stdout);
+      generateABI()
+      deleteEnv()
+      console.log("Contract deployed, you can now exit.")
+    });
+  } else {
+    deployWithEthers(token, ethereumEndpoint, privateKey)
+  }
+}
+
+function deployWithEthers(token, ethereumEndpoint, privateKey){
+  exec("truffle build && git clone https://github.com/INFURA/demo-eth-tx && mv build/wToken.json demo-eth-tx/Demo.json && cd demo-eth-tx", async function(err, stdout, stderr) {
     if (err) console.log(err)
+    let config = await readFile("./demo-eth-tx/ethers/deploy.js")
+    let configNew = config.replace("process.env.INFURA_PROJECT_ID", `'${ethereumEndpoint.split("/")[ethereumEndpoint.split("/").length -1]}'`)
+        configNew = configNew.replace("rinkeby", "mainnet")
+        configNew = configNew.replace("0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122", "0x"+privateKey)
+    let write = await writeFile("./demo-eth-tx/ethers/deploy.js", configNew)
     console.log(stdout);
-    generateABI()
-    deleteEnv()
-    console.log("Contract deployed, you can now exit.")
   });
 }
 
