@@ -145,7 +145,8 @@ function deployWithEthers(token, ethereumEndpoint, privateKey){
         configNew = configNew.replace("0xc5e8f61d1ab959b397eecc0a37a6517b8e67a0e7cf1f4bce5591f3ed80199122", "0x"+privateKey)
     let write = await writeFile("./demo-eth-tx/ethers/deploy.js", configNew)
     console.log(stdout);
-    runDeployment()
+    //runDeployment()
+    console.log("Contract is ready for deployment, exit this script and run: cd demo-eth-tx && node ethers/deploy.js")
   });
 }
 
