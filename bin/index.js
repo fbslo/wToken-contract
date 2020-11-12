@@ -137,7 +137,7 @@ function deploy(token, id, ethereumEndpoint, privateKey){
 }
 
 function deployWithEthers(token, ethereumEndpoint, privateKey){
-  exec("truffle build && git clone https://github.com/INFURA/demo-eth-tx && mv build/wToken.json demo-eth-tx/Demo.json && cd demo-eth-tx && npm install", async function(err, stdout, stderr) {
+  exec("mv truffle-config.demo.js truffle-config.js && truffle build && git clone https://github.com/INFURA/demo-eth-tx && mv build/wToken.json demo-eth-tx/Demo.json && cd demo-eth-tx && npm install", async function(err, stdout, stderr) {
     if (err) console.log(err)
     let config = await readFile("./demo-eth-tx/ethers/deploy.js")
     let configNew = config.replace("process.env.INFURA_PROJECT_ID", `'${ethereumEndpoint.split("/")[ethereumEndpoint.split("/").length -1]}'`)
