@@ -10,3 +10,5 @@ truffle-config.js
 contracts/
 state.json
 tokenABI.js
+demo-eth-tx
+demo-eth-tx-old
